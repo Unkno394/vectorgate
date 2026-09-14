@@ -1,0 +1,1 @@
+{"timestamp":"2024-01-01T10:00:00Z","method":"GET","endpoint":"/department/news","request_bytes":351,"response_status":200,"duration_ms":58,"client_ip":"zenodo-client-001","backend_host":"independent-http","backend_port":"443","baseline_scope":"template.zenodo-web-server","dataset_id":"zenodo-web-server-logs","source_event_id":"example-1"}

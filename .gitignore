@@ -1,0 +1,7 @@
+.env
+cpp-gateway/build/
+java-analytics/out/
+dashboard/node_modules/
+dashboard/dist/
+__pycache__/
+tools/__pycache__/

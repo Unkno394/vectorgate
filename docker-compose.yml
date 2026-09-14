@@ -1,0 +1,68 @@
+services:
+  backend:
+    build:
+      context: ./tools
+    ports:
+      - "3000:3000"
+
+  analytics:
+    build:
+      context: ./java-analytics
+    environment:
+      ANALYTICS_API_PORT: "9091"
+      BASELINE_PATH: /app/baseline/initial-baseline-v1.json
+      GATEWAY_CONTROL_URL: http://gateway:8080
+      GATEWAY_CONTROL_TOKEN: ${GATEWAY_CONTROL_TOKEN:-change-this-before-production}
+      CLICKHOUSE_URL: http://clickhouse:8123/?database=vectorgate
+    volumes:
+      - ./datasets/captures/initial-baseline-v1.json:/app/baseline/initial-baseline-v1.json:ro
+    ports:
+      - "9090:9090/udp"
+      - "9091:9091"
+    depends_on:
+      clickhouse:
+        condition: service_started
+
+  gateway:
+    build:
+      context: ./cpp-gateway
+    environment:
+      GATEWAY_TELEMETRY_HOST: analytics
+      GATEWAY_TELEMETRY_PORT: "9090"
+      GATEWAY_CONTROL_TOKEN: ${GATEWAY_CONTROL_TOKEN:-change-this-before-production}
+      GATEWAY_RESERVE_BACKEND_HOST: backend
+      GATEWAY_RESERVE_BACKEND_PORT: "3000"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - backend
+      - analytics
+
+  dashboard:
+    build:
+      context: ./dashboard
+      args:
+        VITE_ANALYTICS_URL: /analytics
+        VITE_GATEWAY_URL: /gateway
+    environment:
+      GATEWAY_CONTROL_TOKEN: ${GATEWAY_CONTROL_TOKEN:-change-this-before-production}
+    ports:
+      - "5173:80"
+    depends_on:
+      - gateway
+      - analytics
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:26.3
+    ports:
+      - "8123:8123" # HTTP API used by Java Analytics
+      - "9000:9000" # native client protocol, optional
+    environment:
+      CLICKHOUSE_DB: vectorgate
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+
+volumes:
+  clickhouse_data:

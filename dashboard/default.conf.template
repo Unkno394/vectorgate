@@ -1,0 +1,19 @@
+server {
+  listen 80;
+  server_name _;
+  root /usr/share/nginx/html;
+  index index.html;
+
+  location /analytics/ {
+    proxy_pass http://analytics:9091/;
+  }
+
+  location /gateway/ {
+    proxy_set_header X-Gateway-Control-Token ${GATEWAY_CONTROL_TOKEN};
+    proxy_pass http://gateway:8080/;
+  }
+
+  location / {
+    try_files $uri $uri/ /index.html;
+  }
+}

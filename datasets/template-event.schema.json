@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "VectorGate normalized baseline event",
+  "type": "object",
+  "required": ["timestamp", "method", "endpoint", "request_bytes", "baseline_scope"],
+  "properties": {
+    "timestamp": {"type": "string", "format": "date-time"},
+    "method": {"type": "string"},
+    "endpoint": {"type": "string"},
+    "request_bytes": {"type": "integer", "minimum": 0},
+    "response_status": {"type": "integer", "minimum": 0},
+    "duration_ms": {"type": "integer", "minimum": 0},
+    "client_ip": {"type": "string"},
+    "backend_host": {"type": "string"},
+    "backend_port": {"type": "string"},
+    "baseline_scope": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+$"},
+    "dataset_id": {"type": "string"},
+    "source_event_id": {"type": "string"}
+  },
+  "additionalProperties": true
+}

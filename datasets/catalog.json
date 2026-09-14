@@ -1,0 +1,48 @@
+{
+  "contract_version": "1.0",
+  "purpose": "Public datasets validate the baseline-building mechanism. They never form the production Gateway baseline.",
+  "datasets": [
+    {
+      "id": "world-cup-1998",
+      "baseline_scope": "template.world-cup-1998",
+      "role": "Initial load and time-series validation of the baseline-building mechanism",
+      "source_url": "https://ita.ee.lbl.gov/traces/WorldCup/WorldCup.html",
+      "adapter": "Common Log Format after conversion from the published binary files"
+    },
+    {
+      "id": "online-shop-bots",
+      "baseline_scope": "template.online-shop-bots",
+      "role": "External HTTP test: RPS, endpoint repeatability, methods and client patterns; never normal-baseline training",
+      "source_url": "https://zenodo.org/records/18895701",
+      "adapter": "CSV or access-log adapter mapped to the event contract"
+    },
+    {
+      "id": "zenodo-web-server-logs",
+      "baseline_scope": "template.zenodo-web-server",
+      "role": "Candidate only; no concrete source has passed the baseline audit",
+      "source_url": "",
+      "adapter": "Access-log adapter mapped to the event contract"
+    },
+    {
+      "id": "encrypted-web-traffic",
+      "baseline_scope": "template.encrypted-web",
+      "role": "Correlation of encrypted network flows with web-server events; not a replacement for HTTP access logs",
+      "source_url": "https://zenodo.org/records/7687642",
+      "adapter": "IIS event logs mapped to the event contract; packet/flow data remains a linked evidence stream"
+    },
+    {
+      "id": "microservice-tracing",
+      "baseline_scope": "template.microservice-tracing",
+      "role": "Latency and execution-path anomaly scenarios, evaluated separately from edge HTTP traffic",
+      "source_url": "https://databank.illinois.edu/datasets/IDB-6738796",
+      "adapter": "Trace-to-request adapter with service name as backend and trace duration as duration_ms"
+    },
+    {
+      "id": "gateway-production",
+      "baseline_scope": "gateway",
+      "role": "Initial trusted-normal baseline capture in a controlled environment, then production adaptation for the concrete Gateway service",
+      "source_url": "local telemetry",
+      "adapter": "Native gateway UDP telemetry"
+    }
+  ]
+}
