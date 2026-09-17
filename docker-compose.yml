@@ -52,11 +52,26 @@ services:
       - gateway
       - analytics
 
+  demo-store:
+    build:
+      context: ./demo-store
+    ports:
+      - "4173:80"
+    depends_on:
+      - gateway
+
+  normal-traffic:
+    build:
+      context: ./tools
+    entrypoint: ["python3", "generate_trusted_normal_traffic.py", "--gateway-host", "gateway", "--gateway-port", "8080", "--host-header", "shop.local", "--users", "5", "--duration-seconds", "86400"]
+    depends_on:
+      - gateway
+
   clickhouse:
     image: clickhouse/clickhouse-server:26.3
     ports:
-      - "8123:8123" # HTTP API used by Java Analytics
-      - "9000:9000" # native client protocol, optional
+      - "8123:8123"
+      - "9000:9000"
     environment:
       CLICKHOUSE_DB: vectorgate
       CLICKHOUSE_USER: default

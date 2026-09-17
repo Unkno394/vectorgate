@@ -26,5 +26,5 @@ function App() {
 
 }
 function Stat({label,value,text,icon}) { return <article className="stat-card"><div className="stat-top"><span>{label}</span><div className="icon-box"><Icon name={icon}/></div></div><strong>{value}</strong><div className="stat-bottom"><b>{text}</b></div></article>; }
-function Route({kind,title,text,value}) { return <div><span className={`route-icon ${kind}`}>{kind==='ok'?'✓':kind==='watch'?'↗':'—'}</span><div><b>{title}</b><p>{text}</p></div><strong>{value}</strong></div>; }
+function Route({kind,title,text,value}) { return <div><span className={`route-icon ${kind}`} aria-hidden="true"/><div><b>{title}</b><p>{text}</p></div><strong>{value}</strong></div>; }
 export default App;

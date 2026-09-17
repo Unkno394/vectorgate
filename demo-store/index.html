@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>VectorGate Demo Store</title>
+  <style>
+    :root{font-family:Inter,system-ui,sans-serif;color:#e5edf9;background:#071426}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 75% 0,#17315b,transparent 40%),#071426}.wrap{max-width:980px;margin:auto;padding:48px 24px}.tag{color:#5ee0b8;text-transform:uppercase;letter-spacing:.12em;font-size:12px}h1{font-size:42px;margin:12px 0 8px}p{color:#93a8c8}.status{display:inline-block;border:1px solid #245a65;background:#0b302f;color:#66e1bd;border-radius:99px;padding:8px 12px;margin:18px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-top:24px}.card{background:#0d203c;border:1px solid #213f66;border-radius:14px;padding:18px}.card h2{margin:0 0 8px;font-size:18px}.price{font-size:22px;font-weight:700}.card button,form button{border:0;border-radius:8px;padding:10px 14px;background:#5b7cff;color:white;cursor:pointer;font-weight:700;margin-top:12px}.card button:hover,form button:hover{background:#7892ff}.panel{margin-top:26px;padding:20px;border:1px solid #213f66;border-radius:14px;background:#0a1b33}form{display:flex;gap:10px;flex-wrap:wrap}input{background:#071426;color:#e5edf9;border:1px solid #31517c;border-radius:8px;padding:10px}#result{white-space:pre-wrap;overflow:auto;color:#8de8cc;min-height:22px}
+  </style>
+</head>
+<body><main class="wrap">
+  <div class="tag">VectorGate · proxy demonstration</div>
+  <h1>Demo Store</h1><p>Все запросы к каталогу, авторизации и заказам идут через Gateway → test backend. Откройте dashboard через минуту, чтобы увидеть собранную telemetry.</p>
+  <div class="status" id="status">Подключение к Gateway…</div><section class="grid" id="catalog"></section>
+  <section class="panel"><h2>Создать тестовый заказ</h2><form id="login"><input name="username" value="demo" required><input name="password" type="password" value="demo" required><button>Войти и купить первый товар</button></form><pre id="result"></pre></section>
+</main><script>
+let products=[],token='';const out=document.querySelector('#result'),status=document.querySelector('#status');
+async function api(path,options={}){const r=await fetch('/api'+path,{...options,headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{}),...(options.headers||{})}});const data=await r.json();if(!r.ok)throw new Error(data.error||r.status);return data}
+async function catalog(){try{const data=await api('/catalog');products=data.items;status.textContent='● Gateway подключён · backend отвечает';document.querySelector('#catalog').innerHTML=products.map(p=>`<article class="card"><h2>${p.name}</h2><div class="price">$${p.price}</div><button onclick="details('${p.id}')">Открыть товар</button></article>`).join('')}catch(e){status.textContent='Ошибка Gateway: '+e.message}}
+async function details(id){try{out.textContent=JSON.stringify(await api('/products/'+id),null,2)}catch(e){out.textContent=e.message}}
+document.querySelector('#login').onsubmit=async e=>{e.preventDefault();try{const f=new FormData(e.target);token=(await api('/auth/login',{method:'POST',body:JSON.stringify(Object.fromEntries(f))})).access_token;const order=await api('/orders',{method:'POST',body:JSON.stringify({product_id:products[0].id,quantity:1})});out.textContent='Заказ создан через Gateway:\n'+JSON.stringify(order,null,2)}catch(e){out.textContent='Ошибка: '+e.message}};catalog();
+</script></body></html>

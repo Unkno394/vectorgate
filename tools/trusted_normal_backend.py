@@ -86,8 +86,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", type=int, default=3000)
     args = parser.parse_args()
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
-    print(f"Trusted-normal backend on http://127.0.0.1:{args.port}")
+    server = ThreadingHTTPServer(("0.0.0.0", args.port), Handler)
+    print(f"Trusted-normal backend on http://0.0.0.0:{args.port}")
     server.serve_forever()
 
 

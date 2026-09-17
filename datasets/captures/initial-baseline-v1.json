@@ -1,7 +1,7 @@
 {
   "baseline_version": "initial-v1",
   "baseline_scope": "gateway",
-  "backend": "127.0.0.1:3000",
+  "backend": "backend:3000",
   "window_seconds": 60,
   "samples": 30,
   "feature_order": [
